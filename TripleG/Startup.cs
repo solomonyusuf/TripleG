@@ -87,7 +87,7 @@ namespace TripleG
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            IntitializeDb.SeedData(userManager, roleManager);
+            // IntitializeDb.SeedData(userManager, roleManager);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
