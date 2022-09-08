@@ -1,0 +1,261 @@
+﻿@page "/result/detail/{studentId}/{resultId}"
+@inject NavigationManager route
+@inject StudentHubController http
+@inject StudentController std
+@inject StudentResultController stdres
+@inject SubjectController sub
+@inject ResultController res
+@inject ParentController par
+@using TripleG.Server.Models
+@using TripleG.Server.Controllers
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin,Teacher,User")]
+
+
+
+<div>
+    <div class="card ">
+        <div class="card-body">
+            <div class="card-title" align="center">
+                <h2><i>TRIPLE "G" PRIVATE SCHOOLS.</i></h2><br>
+                <small><i>1, Egunjobi street, off oremeji bus-stop,shasha,Lagos.(Esther Osakwe - 08032255795)</i></small>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="color: var(--bs-indigo);font-size: 20px;font-weight: bold;font-style: italic;">@student.FirstName&nbsp;@student.LastName</td>
+                                        <td style="font-weight:bolder;">@student.Sex</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bolder;">@result.Class</td>
+                                        <td style="font-style:italic;"><strong>@student.StudentId</strong></td>
+                                    </tr>
+                                    <br />
+
+                                </tbody>
+                            </table>
+                        </div><label class="form-label"></label>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-weight:bolder;">@parent.PhoneNumber_1<br></td>
+                                        <td style="font-weight:bolder;">@parent.Address_1</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bolder;">@parent.Email</td>
+                                        <td style="font-weight:bolder;">@parent.City</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+
+                                <tbody>
+                                    <tr>
+                                        <td style="font-weight:bolder;">@result.Session&nbsp;Session</td>
+                                        <td style="font-weight:bolder;">@result.Term&nbsp;Term</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bolder;">@result.Position&nbsp;Position</td>
+                                        <td style="font-weight:bolder;">@result.Percentage&nbsp;%</td>
+                                    </tr>
+                                    <AuthorizeView Roles="Teacher,Admin">
+                                        <Authorized>
+
+                                            <tr><a class="btn btn-outline-primary  mb-3" style="margin:15px;" href="/add/subject/@student.StudentId/@result.ResultId">Add Subject</a> </tr>
+                                        </Authorized>
+                                    </AuthorizeView>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12" style="border-width: 3px;border-style: solid;">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;">Subjects</th>
+                                        <th style="text-align: center;">1st Test</th>
+                                        <th style="text-align: center;">2nd Test</th>
+                                        <th style="text-align: center;">Exam</th>
+                                        <th style="text-align: center;">Total</th>
+                                        <th style="text-align: center;">Grade</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    @foreach (var subject in studenthub)
+                                    {
+                                        <tr>
+                                            <td class="subjects" style="text-align: center;font-weight: bold;font-style: italic;"><i>@subject.Name</i></td>
+                                            <td class="report" style="text-align: center;">@subject.FirstTest</td>
+                                            <td class="report" style="text-align: center;">@subject.SecondTest</td>
+                                            <td class="report" style="text-align: center;">@subject.ExamScore</td>
+                                            <td class="report" style="text-align: center;">@subject.Total</td>
+                                            <td class="report" style="font-weight: bold;font-style: italic;text-align: center;">@subject.Grade</td>
+                                            <AuthorizeView Roles="Teacher,Admin">
+                                                <Authorized>
+
+                                                    <td><a href="/edit/subject/@studentId/@resultId/@subject.SubjectId" class="btn btn-info"><i class="fa fa-edit"></i></a></td>
+                                                    <td><button class="btn btn-danger" @onclick="@(async ()=> await Delete(@subject.SubjectId))"><i class="fa fa-remove"></i></button></td>
+                                                </Authorized>
+                                            </AuthorizeView>
+
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container" style="box-shadow: 0px 0px;">
+                <div class="row">
+                    <div class="col-md-12" style="filter: brightness(68%) hue-rotate(27deg);">
+                        <p style="font-weight: bold;font-style: italic;font-size: 20px;">Authority's Remarks</p>
+                        <div class="card">
+                            <div class="card-body" style="background: var(--bs-body-bg);">
+                                <h4 class="card-title"></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div><br />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string studentId { get; set; }
+    [Parameter]
+    public string resultId { get; set; }
+    public Student student = new();
+    public List<StudentHub> studenthub = new();
+    public Result result = new();
+    public ParentInfo parent = new();
+    public Subject subject = new();
+    public List<Subject> subjects = new();
+    public enum Class
+    {
+        DISCOVERY,
+        NURSERY_1,
+        NURSERY_2,
+        BASIC_1,
+        BASIC_2,
+        BASIC_3,
+        BASIC_4,
+        BASIC_5,
+        BASIC_6,
+        JSS1,
+        JSS2,
+        JSS3,
+        SS1,
+        SS2,
+        SS3
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this.GetStudent();
+        await this.GetResult();
+    }
+
+
+
+
+    private async Task GetStudent()
+    {
+        try
+        {
+            var res = await this.std.GetStudent(Guid.Parse(studentId));
+            await GetParent(res.ParentId);
+            this.student = res;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task GetParent(string ID)
+    {
+        try
+        {
+            var res = await this.par.GetParentInfo(Guid.Parse(ID));
+            this.parent = res;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+
+
+    private async Task GetResult()
+    {
+        try
+        {
+            var res = await this.res.GetResult(Guid.Parse(resultId));
+            await init(this.resultId);
+            this.result = res.Value;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task Delete(Guid id)
+    {
+        try
+        {
+            var response = await this.http.DeleteStudentHub(id);
+            await this.GetStudent();
+            await this.GetResult();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+
+
+    private async Task init(string id)
+    {
+        var res = await this.http.GetStudentHub();
+        var init = res.Where(s => s.ResultId.ToString().ToLower() == id.ToLower()).ToList();
+        studenthub = init;
+    }
+
+
+
+
+}
+

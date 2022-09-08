@@ -1,0 +1,116 @@
+﻿@page "/admin/staff"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles ="Admin")]
+@inject StaffsController http
+ 
+<div class="container-fluid">
+    <h3 class="text-dark mb-4">Database Staffs &nbsp;<a class="btn btn-outline-primary" href="/admin/add/staff">Add Staff</a></h3>
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <p class="text-primary m-0 fw-bold">Staffs Info &nbsp;@List.Count()</p>
+        </div>
+        <div class="card-body">
+            <div class="row">
+
+                <EditForm Model="search" class="col-md-12">
+                    <div class="col-md-12">
+                  <InputText @bind-Value="@search.Name"  type="search" class="form-control col-md-12" placeholder="Search by Name"/></div><br />
+                  <button @onclick="FindA" class="btn btn-primary w-100">Search here</button>
+              </EditForm>
+            </div>
+            <div class="table-responsive table mt-2 table-boardered" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                <table class="table my-0" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Phone.No</th>
+                            <th>Bank Info</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in List)
+                        {
+                            <tr>
+                                <td>@s.FirstName &nbsp; @s.MiddleName &nbsp; @s.LastName </td>
+                                <td>@s.Status</td>
+                                <td>@s.PhoneNumber</td>
+                                <td>@s.Bank &nbsp;@s.AccountNumber</td>
+                                <td>@s.Email</td>
+                                <td><a class=" btn btn-outline-primary" href="/admin/edit/staff/@s.id"><i class="fa fa-edit"></i></a></td>
+                                <td><button class="btn btn-danger" @onclick="@(()=>Delete(@s.id))"><i class="fa fa-remove"></i></button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await this.GetAll();
+    }
+    public Staffs staff = new Staffs();
+    public List<Staffs> List = new();
+    public class Search
+    {
+        public string Name{ get; set; }
+    }
+    public Search search = new();
+    [Parameter]
+    public EventCallback<string> OnChange { get; set; }
+
+
+    private async Task GetAll()
+    {
+        try
+        {
+          //  var res = await this.http.GetFromJsonAsync<List<Staffs>>("api/Staffs");
+            var res = await this.http.GetStaffs();
+            this.List = res.Value.ToList();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task FindA()
+    {
+        try
+        {
+                
+            var res = await this.http.GetStaffs();
+            this.List = res.Value.Where(s => $"{s.FirstName + "" + s.LastName}".ToLowerInvariant().Contains(search.Name.ToLowerInvariant())).ToList();
+            
+           
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task Delete(Guid id)
+    {
+        try
+        {
+            var response = await this.http.DeleteStaffs(id);
+            await this.GetAll();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+}

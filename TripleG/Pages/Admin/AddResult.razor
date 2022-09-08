@@ -1,0 +1,170 @@
+﻿@page "/admin/add/result/{studentId}"
+@inject NavigationManager route
+@inject StudentHubController http
+@inject StudentController std
+@inject StudentResultController stdres
+@inject SubjectController sub
+@inject ResultController res
+@using TripleG.Server.Controllers
+@using Microsoft.AspNetCore.Components.Forms
+@using TripleG.Server.Models
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin,Teacher")]
+
+<div>
+    <h2 class="text-center">Create&nbsp; Result </h2>
+    <div>
+        <EditForm Model="result" OnValidSubmit="SaveResult">
+            <div class="card">
+                <div class="card-body" style="margin:30px;">
+                    <div class="mb-3"><InputText @bind-Value="result.Percentage" name="Percentage" class="form-control" type="text" placeholder="Percentage" /></div>
+                    <div class="mb-3"><InputText @bind-Value="result.Position" name="Position" class="form-control" type="text" placeholder="Position" /></div>
+                    <div class="mb-3"><InputText @bind-Value="result.Session" name="Session" class="form-control" type="text" placeholder="Session eg(2008/2009)" /></div>
+                    <div class="mb-3"><label>Class</label></div>
+                    <InputSelect @bind-Value="@result.Class">
+                        @foreach (var item in Enum.GetValues(typeof(Class)))
+                        {
+                                <option value="@item">@item</option>
+                        }
+                    </InputSelect>
+                    <div class="mb-3"><label>Term</label></div>
+                    <InputSelect @bind-Value="@result.Term">
+                        @foreach (var item in Enum.GetValues(typeof(Term)))
+                        {
+                                <option value="@item">@item</option>
+                        }
+                    </InputSelect>
+                    <div class="mb-3"></div>
+                    <div class="mb-3"></div>
+                    <div class="mb-3"></div>
+                    @if (this.load)
+                    {
+                            <span align="center" class="spinner-border spinner-border-sm" role="status" style="width: 100px; height: 100px; margin: 10px; align-self:center;"></span>
+
+                        <br />
+                          <p>..Please wait compiling subjects</p>
+                    }
+                    else
+                    {
+                            <div class="mb-3"><button class="btn btn-primary text-center align-self-center w-100" type="submit" style="text-align: center;margin: 15px;">Submit</button></div>
+                    }
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string studentId { get; set; }
+    public bool load { get; set; }
+    public Result result = new();
+    public ResultHub reshub = new();
+    public Student student = new();
+    public Subject subject = new();
+    public StudentHub studentHub = new(); public Guid st = new();
+    public enum Class
+    {
+        NULL,
+        DISCOVERY,
+        NURSERY_1,
+        NURSERY_2,
+        BASIC_1,
+        BASIC_2,
+        BASIC_3,
+        BASIC_4,
+        BASIC_5,
+        BASIC_6,
+        JSS1,
+        JSS2,
+        JSS3,
+        SS1,
+        SS2,
+        SS3
+    }
+    public enum Term
+    {
+        NULL,
+        FIRST,
+        SECOND,
+        THIRD
+    }
+
+    private async Task post(Guid resId, Guid stId)
+    {
+        try
+        {
+            var input = new StudentResult { ResultId = resId, StudentId = stId };
+            var save = await this.stdres.PostStudentResult(input);
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task SaveResult()
+    {
+        try
+        {
+            var getstd = await this.std.GetStudent(Guid.Parse(studentId));
+            var addResult = await this.res.PostResult(result);
+            var a = addResult;
+            await UpdateStudent();
+            await SaveSubject(a.ResultId, Guid.Parse(studentId));
+            await post(a.ResultId, Guid.Parse(studentId));
+            this.route.NavigateTo($"/result/detail/{this.studentId}/{a.ResultId}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task SaveSubject(Guid ResultId, Guid std)
+    {
+        try
+        {
+            this.load = true;
+            var input = new Subject { Name = "FirstSubject" };
+            var ENGLISH = await this.sub.PostSubject(input);
+            var e = ENGLISH; 
+           await PostHub(std, ResultId, e.SubjectId, e.Name, e.FirstTest, e.SecondTest, e.ExamScore, e.Total, e.Grade);
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task PostHub(Guid Std, Guid RId, Guid SId, string name, string ftest, string stest, string escore, string total, string grade)
+    {
+        try
+        {
+
+            var req = new StudentHub { StudentId = Std, ResultId = RId, SubjectId = SId, Name = name, FirstTest = ftest, SecondTest = stest, ExamScore = escore, Total = total, Grade = grade };
+            var res = await this.http.PostStudentHub(req);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task UpdateStudent()
+    {
+        try
+        {
+            var res = await this.std.GetStudent(Guid.Parse(studentId));
+            this.student = res;
+            this.student.ResultId = res.StudentId.ToString();
+            var save = await this.std.PutStudent(Guid.Parse(studentId), student);
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+}
