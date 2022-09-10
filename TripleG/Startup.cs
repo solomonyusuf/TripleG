@@ -78,36 +78,35 @@ namespace TripleG
         {
 
             env.EnvironmentName = Environments.Production;
-            if (env.IsDevelopment())
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //    app.UseMigrationsEndPoint();
+            //}
+
+
+            // IntitializeDb.SeedData(userManager, roleManager);
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseHsts();
+            app.UseRouting();
+            app.UseExceptionHandler("/Error");
+            //app.UseStaticFiles(new StaticFileOptions()
+            //{
+            //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),
+            //    RequestPath = new PathString("/StaticFiles")
+            //});
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
-            }
+                endpoints.MapControllers();
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Host");
+            });
 
-            if (env.IsProduction())
-            {
-                // IntitializeDb.SeedData(userManager, roleManager);
-                app.UseHttpsRedirection();
-                app.UseStaticFiles();
-                app.UseHsts();
-                app.UseRouting();
-                app.UseExceptionHandler("/Error");
-                //app.UseStaticFiles(new StaticFileOptions()
-                //{
-                //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),
-                //    RequestPath = new PathString("/StaticFiles")
-                //});
-                app.UseAuthentication();
-                app.UseAuthorization();
 
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                    endpoints.MapBlazorHub();
-                    endpoints.MapFallbackToPage("/_Host");
-                });
-
-            }
 
 
         }
