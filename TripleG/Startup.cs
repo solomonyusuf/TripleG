@@ -83,31 +83,33 @@ namespace TripleG
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
             }
-            else
+
+            if (env.IsProduction())
             {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // IntitializeDb.SeedData(userManager, roleManager);
+                app.UseHttpsRedirection();
+                app.UseStaticFiles();
                 app.UseHsts();
+                app.UseRouting();
+                app.UseExceptionHandler("/Error");
+                //app.UseStaticFiles(new StaticFileOptions()
+                //{
+                //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),
+                //    RequestPath = new PathString("/StaticFiles")
+                //});
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                    endpoints.MapBlazorHub();
+                    endpoints.MapFallbackToPage("/_Host");
+                });
+
             }
-            // IntitializeDb.SeedData(userManager, roleManager);
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
-            app.UseRouting();
-            //app.UseStaticFiles(new StaticFileOptions()
-            //{
-            //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),
-            //    RequestPath = new PathString("/StaticFiles")
-            //});
-            app.UseAuthentication();
-            app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToPage("/_Host");
-            });
         }
     }
 }
