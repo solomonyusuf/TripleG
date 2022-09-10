@@ -76,8 +76,8 @@ namespace TripleG
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager,
         RoleManager<Role> roleManager)
         {
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Production");
-            env.EnvironmentName = "ASPNETCORE_ENVIRONMENT";
+
+            env.EnvironmentName = Environments.Production;
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
