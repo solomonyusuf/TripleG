@@ -39,7 +39,10 @@ namespace TripleG
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite("Filename=tgs.db"));
+               options.UseSqlite("Filename=tgs.db")
+                // options.UseSqlServer(Configuration.GetConnectionString("TripleGContext"))
+
+                );
             services.AddIdentity<IdentityUser, Role>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddDefaultTokenProviders()
                 .AddDefaultUI()
@@ -90,12 +93,13 @@ namespace TripleG
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            db.Database.Migrate();
             IntitializeDb.SeedData(userManager, roleManager);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-            db.Database.Migrate();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
