@@ -56,6 +56,7 @@ namespace TripleG
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });
+            services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.MigrateAsync();
             services.AddScoped<StudentController>();
             services.AddScoped<StaffsController>();
             services.AddScoped<AuthenticationController>();
