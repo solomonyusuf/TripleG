@@ -60,7 +60,7 @@ namespace TripleG
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });
-
+            services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
             services.AddScoped<StudentController>();
             services.AddScoped<StaffsController>();
             services.AddScoped<AuthenticationController>();
@@ -80,7 +80,7 @@ namespace TripleG
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager,
-          RoleManager<Role> roleManager, ApplicationDbContext db)
+          RoleManager<Role> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -93,7 +93,7 @@ namespace TripleG
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            db.Database.Migrate();
+
             IntitializeDb.SeedData(userManager, roleManager);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
