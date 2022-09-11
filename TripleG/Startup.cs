@@ -76,26 +76,23 @@ namespace TripleG
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager,
         RoleManager<Role> roleManager)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
 
-            env.EnvironmentName = Environments.Production;
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //    app.UseMigrationsEndPoint();
-            //}
-
-
-            // IntitializeDb.SeedData(userManager, roleManager);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseHsts();
+
             app.UseRouting();
-            app.UseExceptionHandler("/Error");
-            //app.UseStaticFiles(new StaticFileOptions()
-            //{
-            //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),
-            //    RequestPath = new PathString("/StaticFiles")
-            //});
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -105,8 +102,6 @@ namespace TripleG
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-
-
 
 
         }
