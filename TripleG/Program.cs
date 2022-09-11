@@ -22,5 +22,6 @@ namespace TripleG
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
     }
 }
