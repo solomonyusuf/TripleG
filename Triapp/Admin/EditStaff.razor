@@ -1,0 +1,100 @@
+﻿@page "/admin/edit/staff/{id}"
+@inject NavigationManager route
+@using Microsoft.AspNetCore.Authorization
+@using Triapp.Server.Controllers
+@using Microsoft.AspNetCore.Components.Forms
+@using Triapp.Server.Models
+@inject StaffsController http
+@attribute [Authorize(Roles ="Admin")]
+
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="tab" href="#tab-1">Staff info 1</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="tab" href="#tab-2">Staff Info 2</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link" href="/admin/staff"><i class="fa fa-previous text-dark"></i></a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" role="tabpanel" id="tab-1">
+            <section class="contact-clean">
+                <form>
+                    <h2 class="text-center">Edit Staff</h2>
+                    <EditForm Model="@staff">
+                        <div class="mb-3"><InputText @bind-Value="staff.FirstName" class="form-control" type="text" name="FirstName" placeholder="FirstName" /></div>
+                        <div class="mb-3"><InputText @bind-Value="staff.MiddleName" class="form-control" type="text" name="MiddleName" placeholder="MiddleName" /></div>
+                        <div class="mb-3"><InputText @bind-Value="staff.LastName" class="form-control" type="text" name="LastName" placeholder="LastName" /></div>
+                        <div class="mb-3"></div>
+                        <label class="form-label text-center">Date of Birth</label>
+                        <InputText @bind-Value="staff.DOB" class="form-control" type="date" />
+                        <div class="mb-3"></div>
+                        <div class="mb-3">
+                            <InputText @bind-Value="staff.OriginState" class="form-control" type="text" name="state of Origin" placeholder="state of Origin" />
+                        </div>
+                        <div class="mb-3"></div>
+                        <div class="mb-3"></div>
+                    </EditForm>
+                </form>
+            </section>
+        </div>
+        <div class="tab-pane fade" role="tabpanel" id="tab-2">
+            <section class="contact-clean">
+                <form method="post">
+                    <h2 class="text-center" style="color: rgb(80, 94, 108);">Staff Details</h2>
+                    <EditForm Model="@staff" OnValidSubmit="saveStaff">
+                        <div class="mb-3"><InputText @bind-Value="staff.Position" class="form-control" type="text" placeholder="Position" /></div>
+                        <div class="mb-3"><InputText @bind-Value="staff.Email" class="form-control" type="text" name="Email" placeholder="Email" /></div>
+                        <div class="mb-3"><InputText @bind-Value="staff.AccountNumber" class="form-control" type="text" placeholder="Account Number" /></div>
+                        <div class="mb-3"><InputText @bind-Value="staff.Bank" class="form-control" type="text" placeholder="Bank" /></div>
+                        <div class="mb-3"><InputText @bind-Value="staff.PhoneNumber" class="form-control" type="text" placeholder="Phone Number " /></div>
+                        <div class="mb-3"><InputText @bind-Value="staff.Address" class="form-control" type="text" placeholder="Address " /></div>
+                        <div class="mb-3"><InputText @bind-Value="staff.Status" class="form-control" type="text" placeholder="Address " /></div>
+                        <div class="mb-3"><button class="btn btn-primary" type="submit">send </button></div>
+                    </EditForm>
+                </form>
+            </section>
+        </div>
+
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+    public Staffs staff = new Staffs();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this.GetStaff();
+    }
+
+    private async Task GetStaff()
+    {
+        try
+        {
+            var res = await this.http.GetStaffs(Guid.Parse(id));
+            this.staff = res.Value;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+    }
+
+    private async Task saveStaff()
+    {
+        try
+        {
+            var res = await this.http.PutStaffs(Guid.Parse(id),staff);
+            this.route.NavigateTo("/admin/staff");
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+    }
+
+}

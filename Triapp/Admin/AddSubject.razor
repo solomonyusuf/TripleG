@@ -1,0 +1,99 @@
+﻿@page "/add/subject/{studentId}/{resultId}"
+@inject NavigationManager route
+@inject SubjectController http
+@inject StudentController std
+@inject StudentHubController sh
+@inject ResultController rep
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles ="Admin,Teacher")]
+
+
+<div>
+    <div class="card">
+        <div class="card-body" style="margin:40px;">
+            <EditForm Model="subject" OnValidSubmit="PostSubject">
+                <h2 class="text-center" style="color: var(--bs-blue);">Add Subjects</h2>
+                <div class="mb-3"><InputText @bind-Value="subject.Name" class="form-control" type="text" name="Name" placeholder="Enter Subject Name" /></div>
+                <div class="mb-3"><InputText @bind-Value="subject.FirstTest" class="form-control" type="text" name="FirstTest" placeholder="First Test" /></div>
+                <div class="mb-3"><InputText @bind-Value="subject.SecondTest" class="form-control" type="text" name="SecondTest" placeholder="Second Test" /></div>
+                <div class="mb-3"><InputText @bind-Value="subject.ExamScore" class="form-control" type="text" name="ExamScore" placeholder="ExamScore" /></div>
+                <div class="mb-3"><InputText @bind-Value="subject.Total" class="form-control" type="text" name="Percentage" placeholder="Total" /></div>
+                @*  <div class="mb-3"><InputText @bind-Value="subject.Grade" class="form-control" type="text" name="Grade" placeholder="Grade" /></div>*@
+                <div class="mb-3"></div>
+                <div class="mb-3"></div>
+                 @if(this.load){
+                        <span align="center" class="spinner-border spinner-border-sm" role="status" style="width: 100px; height: 100px; margin: 10px; align-self:center;"></span><br />
+                      <p>..Please wait compiling subjects</p>
+                    }
+                    else{
+                        <div class="mb-3"><button class="btn btn-primary text-center align-self-center w-100" type="submit" style="text-align: center;margin: 15px;">Submit</button></div>
+                    }
+            </EditForm>
+
+           
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string studentId { get; set; }
+    [Parameter]
+    public string resultId { get; set; }
+    public bool load { get; set; }
+    public Subject subject = new();
+    public StudentHub studentHub = new();
+    //
+
+
+
+    private async Task PostSubject()
+    {
+        try
+        {
+            var res = await this.http.PostSubject(subject);
+            var a = res;
+            var student = await this.std.GetStudent(Guid.Parse(studentId));
+            var Result = await this.rep.GetResult(Guid.Parse(resultId));
+            await SaveSubject(Result.Value.ResultId,student.StudentId,a.SubjectId,a.Name, a.FirstTest, a.SecondTest, a.ExamScore, a.Total, a.Grade);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+
+    private async Task SaveSubject(Guid resultId,Guid studentId,Guid subjectId,string name, string ftest, string stest, string escore, string total, string grade)
+    {
+        try
+        {   
+            var req = new StudentHub { StudentId=studentId,ResultId = resultId, SubjectId = subjectId, Name = name, FirstTest = ftest, SecondTest = stest, ExamScore = escore, Total = total, Grade = grade };
+            var res = await this.sh.PostStudentHub(req);
+            this.route.NavigateTo($"/result/detail/{this.studentId}/{this.resultId}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

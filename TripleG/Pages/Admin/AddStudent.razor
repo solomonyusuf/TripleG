@@ -3,6 +3,7 @@
 @inject StudentController http
 @inject ParentController par
 @using Microsoft.AspNetCore.Authorization
+@using System.IO
 @attribute [Authorize(Roles = "Admin,Teacher")]
 
 <div>
@@ -18,10 +19,16 @@
 
                     <h2 class="text-center">Create Student</h2>
                     <EditForm Model="@student">
-                        @*<div class="mb-3">
-                            <img class="img-circle" src="@image" height="250" width="300"/>
-                            <InputFile OnChange="@SaveImg" accept=".jpg ,.png,.jpeg" class="form-control" type="file" />
-                            </div>*@
+
+                        @if(Path != null)
+                        {
+                            <div class="mb-3">
+                            <img src="@Path" style="height:300px;width:300px;" type="text" class="form-control shadow-dark" />
+                        </div>
+                        }
+                        <div class="mb-3">
+                            <InputFile OnChange="@Upload" accept=".jpg ,.png,.jpeg" class="form-control" type="file" />
+                            </div>
 
 
                         <div class="mb-3"><InputText @bind-Value="student.FirstName" class="form-control" type="text" name="FirstName" placeholder="FirstName" /></div>
@@ -79,7 +86,7 @@
 @code {
     public Student student = new Student();
     public ParentInfo parent = new ParentInfo();
-
+    public string Path;
     public enum Sex
     {
         NULL,
@@ -106,33 +113,17 @@
         SS3
     }
 
-
-    public class Upload
+    public async Task Upload(InputFileChangeEventArgs args)
     {
-        public string dbPath { get; set; }
-    }
-    public Upload upload = new();
-
-    public string image { get; set; }
-
-    public async Task SaveImg(InputFileChangeEventArgs args)
-    {
-        try   
-        {
-            var format = args.File.GetType();
-            var file = args.File;
-            var buffer = new byte[file.Size];
-            await file.OpenReadStream(maxAllowedSize: 80000000).ReadAsync(buffer);
-            var st = Convert.ToBase64String(buffer);
-            this.student.ImgPath = $"{st}";
-            image = $"data:{format};base64,{st}";
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-
+        var file = args.File;
+        var stream = file.OpenReadStream(20000000); 
+        var p = $"wwwroot\\StaticFiles\\{file.Name}";
+        student.ImgPath = p;
+        var create = File.Create(p);
+        await stream.CopyToAsync(create);
+        stream.Close();
+        create.Close();
+        Path = p;
     }
 
 

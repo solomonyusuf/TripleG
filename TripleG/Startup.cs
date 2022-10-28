@@ -60,7 +60,7 @@ namespace TripleG
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });
-            services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
+
             services.AddScoped<StudentController>();
             services.AddScoped<StaffsController>();
             services.AddScoped<AuthenticationController>();
@@ -79,8 +79,7 @@ namespace TripleG
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<IdentityUser> userManager,
-          RoleManager<Role> roleManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -94,10 +93,14 @@ namespace TripleG
                 app.UseHsts();
             }
 
-            IntitializeDb.SeedData(userManager, roleManager);
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "StaticFiles")),
+                RequestPath = new PathString("/wwwroot/StaticFiles")
+            });
             app.UseRouting();
 
             app.UseAuthentication();

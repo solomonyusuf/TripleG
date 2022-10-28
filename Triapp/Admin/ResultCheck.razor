@@ -1,0 +1,38 @@
+﻿@page "/result/check"
+@inject NavigationManager route
+@using Triapp.Server.Models
+
+
+
+<div>
+   <div>
+      <h4 align="center">Generate Student Result</h4>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <EditForm Model="@res" class="col-md-10 navbar-search form-group">
+          <div class="input-group"><InputText @bind-Value="@res.ResId" class="bg-light col-md-10 form-control border-1 " type="text" placeholder="Enter Student ID here......"/><button @onclick="@(()=>Info())" class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+        </EditForm><br>
+      </div>
+ </div>
+</div>
+@code {
+    public class Res
+    {
+        public string ResId{ get; set; }
+    }
+    public Res res = new();
+
+    private  bool  Info()
+    {
+        try
+        {
+            this.route.NavigateTo($"/admin/view/result/{this.res.ResId}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        return true;
+    }
+}

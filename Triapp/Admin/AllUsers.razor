@@ -1,0 +1,121 @@
+﻿@page "/admin/users"
+@using Triapp.Server.Controllers
+@using Triapp.Server.Models
+@inject AuthenticationController http
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+
+<div class="container-fluid">
+    <h3 class="text-dark mb-4">Database Users</h3>
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <p class="text-primary m-0 fw-bold">Users Info &nbsp; @User.Count</p>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <EditForm Model="search" class="col-md-12">
+                    <div class="col-md-12">
+                        <InputText @bind-Value="@search.Name" type="search" class="form-control col-md-12" placeholder="Search User Email" />
+                    </div><br />
+                    <button @onclick="FindA" class="btn btn-primary w-100">Search here</button>
+                </EditForm>
+            </div>
+            <div class="table-responsive table-boardered table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                <table class="table my-0" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Phone.No</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var u in User)
+                        {
+                            <tr>
+                                <td>@u.Email</td>
+                                <td>@u.PhoneNumber</td>
+                                <td><button class="btn btn-danger" @onclick="@(()=>Delete(@u.Id))"><i class="fa fa-remove"></i></button></td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await this.GetAll();
+    }
+    public List<ApplicationUser> User = new();
+    public UserRole userRole = new();
+    public string Role { get; set; }
+
+    public class Search
+    {
+        public string Name { get; set; }
+    }
+    public Search search = new();
+    [Parameter]
+    public EventCallback<string> OnChange { get; set; }
+
+    private async Task FindA()
+    {
+        try
+        {
+
+            var res = await this.http.GetUsers();
+            this.User = res.Where(s => s.Email.ToLowerInvariant().Contains(search.Name.ToLowerInvariant())).ToList();
+
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+
+
+    private async Task GetAll()
+    {
+        try
+        {
+
+            var res = await this.http.GetUsers();
+            this.User = res.ToList();
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task Delete(string id)
+    {
+        try
+        {
+            var response = await this.http.DeleteApplicationUser(id);
+            await this.GetAll();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+
+
+}

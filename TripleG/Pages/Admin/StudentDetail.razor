@@ -9,14 +9,14 @@
     <h3 class="text-dark mb-4"> Student Details </h3>
     <div class="row mb-3">
         <div class="col-lg-4">
-           @* <div class="card mb-3">
+            <div class="card mb-3">
                 <div class="card-body text-center shadow">
                     <img class="rounded-circle mb-3 mt-4" src="@student.ImgPath" width="160" height="160">
                     <EditForm Model="@upload">
-                      <div class="mb-3"><InputFile @bind-Value="@upload.dbPath" accept="*/image" class="form-control" type="file"  /></div>
+                      <div class="mb-3"><InputFile  OnChange="@ImgPost" accept="*/image" class="form-control" type="file"  /></div>
                      </EditForm>
                 </div>
-            </div>*@
+            </div>
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="text-primary fw-bold m-0">Details</h6>
@@ -250,7 +250,18 @@
         SS3
     }
    
-
+    public async Task ImgPost(InputFileChangeEventArgs args)
+    {
+        var file = args.File;
+        var stream = file.OpenReadStream(20000000); 
+        var p = $"wwwroot\\StaticFiles\\{file.Name}";
+        var create = File.Create(p);
+        await stream.CopyToAsync(create);
+        create.Close();
+        stream.Close();
+        student.ImgPath = p;
+    }
+ 
     private async Task GetStudent(Guid studentId)
     {
         try

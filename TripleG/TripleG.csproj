@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -7,6 +7,43 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\Authentication.cs" />
+  </ItemGroup>
+	<ItemGroup>
+		<None Include="wwwroot\StaticFiles\*" CopyToOutputDirectory="PreserveNewest" DestinationFolder="$(OutDir)\wwwroot\StaticFiles" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Remove="wwwroot\StaticFiles\file.txt" />
+	</ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\assets\images\flag\united-kingdom.svg" />
+    <None Include="wwwroot\assets\images\flag\united-states-of-america.svg" />
+    <None Include="wwwroot\assets\vendors\bootstrap-select\bootstrap-select.min.js" />
+    <None Include="wwwroot\assets\vendors\bootstrap-touchspin\jquery.bootstrap-touchspin.js" />
+    <None Include="wwwroot\assets\vendors\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\assets\vendors\bootstrap\js\popper.min.js" />
+    <None Include="wwwroot\assets\vendors\counter\counterup.min.js" />
+    <None Include="wwwroot\assets\vendors\counter\waypoints-min.js" />
+    <None Include="wwwroot\assets\vendors\fontawesome\fonts\fontawesome-webfont3e6e.svg" />
+    <None Include="wwwroot\assets\vendors\fontawesome\fonts\fontawesome-webfont3e6e.woff2" />
+    <None Include="wwwroot\assets\vendors\imagesloaded\imagesloaded.js" />
+    <None Include="wwwroot\assets\vendors\magnific-popup\magnific-popup.js" />
+    <None Include="wwwroot\assets\vendors\masonry\filter.js" />
+    <None Include="wwwroot\assets\vendors\masonry\masonry.js" />
+    <None Include="wwwroot\assets\vendors\owl-carousel\owl.carousel.js" />
+    <None Include="wwwroot\assets\vendors\revolution\fonts\revicons\revicons90c6.svg" />
+    <None Include="wwwroot\assets\vendors\revolution\js\extensions\revolution.extension.actions.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\extensions\revolution.extension.carousel.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\extensions\revolution.extension.kenburn.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\extensions\revolution.extension.layeranimation.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\extensions\revolution.extension.migration.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\extensions\revolution.extension.navigation.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\extensions\revolution.extension.parallax.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\extensions\revolution.extension.slideanims.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\extensions\revolution.extension.video.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\jquery.themepunch.revolution.min.js" />
+    <None Include="wwwroot\assets\vendors\revolution\js\jquery.themepunch.tools.min.js" />
+    <None Include="wwwroot\assets\vendors\switcher\switcher.js" />
+    <None Include="wwwroot\assets\vendors\themify\fonts\themify9f24.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +55,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.17" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\images\main-slider\" />
   </ItemGroup>
 
 </Project>

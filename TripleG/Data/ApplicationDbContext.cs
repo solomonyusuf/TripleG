@@ -12,6 +12,7 @@ namespace TripleG.Server.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            Database.MigrateAsync();
         }
         public virtual DbSet<ApplicationUser> User { get; set; }
         public virtual DbSet<Contact> Contacts { get; set; }
