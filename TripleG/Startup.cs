@@ -73,7 +73,7 @@ namespace TripleG
             services.AddScoped<SubjectController>();
             services.AddScoped<UploadController>();
             services.AddScoped<UserRole>();
-
+            services.AddDirectoryBrowser();
 
         }
 
@@ -96,11 +96,24 @@ namespace TripleG
             IntitializeDb.SeedData(userManager, roleManager);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = (c) =>
+                {
+                    c.Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                },
+            });
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "StaticFiles")),
                 RequestPath = new PathString("/wwwroot/StaticFiles")
             });
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "StaticFiles")),
+                RequestPath = new PathString("/wwwroot/StaticFiles")
+            });
+
             app.UseRouting();
 
             app.UseAuthentication();
