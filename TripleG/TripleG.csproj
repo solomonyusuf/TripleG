@@ -9,10 +9,10 @@
     <Compile Remove="Controllers\Authentication.cs" />
   </ItemGroup>
 	<ItemGroup>
-		<None Include="wwwroot\StaticFiles\*" CopyToOutputDirectory="PreserveNewest" DestinationFolder="$(OutDir)\wwwroot\StaticFiles" />
+		<None Include="StaticFiles\*" CopyToOutputDirectory="PreserveNewest" DestinationFolder="$(OutDir)\StaticFiles" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Content Remove="wwwroot\StaticFiles\file.txt" />
+	  <Content Remove="StaticFiles\file.txt" />
 	</ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\assets\images\flag\united-kingdom.svg" />

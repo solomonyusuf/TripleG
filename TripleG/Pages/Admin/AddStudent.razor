@@ -117,7 +117,7 @@
     {
         var file = args.File;
         var stream = file.OpenReadStream(20000000); 
-        var p = $"wwwroot\\StaticFiles\\{file.Name}";
+        var p = $"StaticFiles\\{file.Name}";
         student.ImgPath = p;
         var create = File.Create(p);
         await stream.CopyToAsync(create);

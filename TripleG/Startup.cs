@@ -94,6 +94,7 @@ namespace TripleG
                 app.UseHsts();
             }
             IntitializeDb.SeedData(userManager, roleManager);
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
@@ -105,14 +106,10 @@ namespace TripleG
             });
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "StaticFiles")),
-                RequestPath = new PathString("/wwwroot/StaticFiles")
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"StaticFiles")),
+                RequestPath = new PathString("/StaticFiles")
             });
-            app.UseDirectoryBrowser(new DirectoryBrowserOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "StaticFiles")),
-                RequestPath = new PathString("/wwwroot/StaticFiles")
-            });
+
 
             app.UseRouting();
 
