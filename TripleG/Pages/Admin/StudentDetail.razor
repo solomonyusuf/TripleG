@@ -11,7 +11,8 @@
         <div class="col-lg-4">
             <div class="card mb-3">
                 <div class="card-body text-center shadow">
-                    <img class="rounded-circle mb-3 mt-4" src="@student.ImgPath" width="160" height="160">
+                    <img class="rounded-circle mb-3 mt-4" src="@student.ImgPath" width="160" height="160"><br />
+                     <strong style="margin:3px;">Note: image must be less than 50kb</strong>
                     <EditForm Model="@upload">
                       <div class="mb-3"><InputFile  OnChange="@ImgPost" accept="*/image" class="form-control" type="file"  /></div>
                      </EditForm>
@@ -230,7 +231,7 @@
         FEMALE
     }
 
-     public enum Class
+    public enum Class
     {
         NULL,
         DISCOVERY,
@@ -249,17 +250,19 @@
         SS2,
         SS3
     }
-   
+
     public async Task ImgPost(InputFileChangeEventArgs args)
     {
         var file = args.File;
-        var stream = file.OpenReadStream(20000000); 
-        var p = $"StaticFiles\\{file.Name}";
-        var create = File.Create(p);
-        await stream.CopyToAsync(create);
-        create.Close();
-        stream.Close();
+        var stream = file.OpenReadStream(20000000);
+        byte[] buffer;
+        var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        buffer = ms.ToArray();
+        var e = Convert.ToBase64String(buffer);
+        var p = $"data:{file.ContentType};base64, {e}";
         student.ImgPath = p;
+        stream.Close();
     }
  
     private async Task GetStudent(Guid studentId)

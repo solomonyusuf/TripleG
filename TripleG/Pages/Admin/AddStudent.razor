@@ -19,13 +19,14 @@
 
                     <h2 class="text-center">Create Student</h2>
                     <EditForm Model="@student">
-
+                        
                         @if(Path != null)
                         {
                             <div class="mb-3">
                             <img src="@Path" style="height:300px;width:300px;" type="text" class="form-control shadow-dark" />
                         </div>
                         }
+                        <strong style="margin:3px;">Note: image must be less than 50kb</strong>
                         <div class="mb-3">
                             <InputFile OnChange="@Upload" accept=".jpg ,.png,.jpeg" class="form-control" type="file" />
                             </div>
@@ -116,14 +117,16 @@
     public async Task Upload(InputFileChangeEventArgs args)
     {
         var file = args.File;
-        var stream = file.OpenReadStream(20000000); 
-        var p = $"StaticFiles\\{file.Name}";
-        student.ImgPath = p;
-        var create = File.Create(p);
-        await stream.CopyToAsync(create);
-        stream.Close();
-        create.Close();
+        var stream = file.OpenReadStream(20000000);   
+        byte[] buffer;
+        var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        buffer = ms.ToArray();
+        var e = Convert.ToBase64String(buffer);
+        var p = $"data:{file.ContentType};base64, {e}";
         Path = p;
+        student.ImgPath = p;
+        stream.Close();
     }
 
 
