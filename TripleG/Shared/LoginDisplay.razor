@@ -1,9 +1,9 @@
 ﻿<AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
-        <form method="post" action="Identity/Account/LogOut" style="margin:5px;">
+        <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name</a>
+       @* <form method="post" action="Identity/Account/LogOut" style="margin:5px;">
             <button type="submit" class="nav-link btn-sm btn btn-danger"><i class="fa fa-sign-out"></i></button>
-        </form>
+        </form>*@
     </Authorized>
     <NotAuthorized>
         <a  class="btn btn-sm btn-warning" style="margin:5px;"href="Identity/Account/Register">Register</a>
