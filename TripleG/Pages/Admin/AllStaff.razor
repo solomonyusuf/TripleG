@@ -2,7 +2,8 @@
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles ="Admin")]
 @inject StaffsController http
- 
+ @layout AdminLayout
+
 <div class="container-fluid">
     <h3 class="text-dark mb-4">Database Staffs &nbsp;<a class="btn btn-outline-primary" href="/admin/add/staff">Add Staff</a></h3>
     <div class="card shadow">

@@ -3,6 +3,7 @@
 @inject StudentController http
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "Admin,Teacher")]
+@layout AdminLayout
 
       @*  if(student == null){
     <span align="center" class="spinner-border spinner-border-sm" role="status" style="width: 100px; height: 100px; margin: 100px; align-self:center;"></span>

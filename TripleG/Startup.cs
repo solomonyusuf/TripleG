@@ -97,18 +97,7 @@ namespace TripleG
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                OnPrepareResponse = (c) =>
-                {
-                    c.Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-                },
-            });
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"StaticFiles")),
-                RequestPath = new PathString("/StaticFiles")
-            });
+
 
 
             app.UseRouting();

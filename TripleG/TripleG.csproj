@@ -8,12 +8,6 @@
   <ItemGroup>
     <Compile Remove="Controllers\Authentication.cs" />
   </ItemGroup>
-	<ItemGroup>
-		<None Include="StaticFiles\*" CopyToOutputDirectory="PreserveNewest" DestinationFolder="$(OutDir)\StaticFiles" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Content Remove="StaticFiles\file.txt" />
-	</ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\assets\images\flag\united-kingdom.svg" />
     <None Include="wwwroot\assets\images\flag\united-states-of-america.svg" />
@@ -44,6 +38,28 @@
     <None Include="wwwroot\assets\vendors\revolution\js\jquery.themepunch.tools.min.js" />
     <None Include="wwwroot\assets\vendors\switcher\switcher.js" />
     <None Include="wwwroot\assets\vendors\themify\fonts\themify9f24.svg" />
+    <None Include="wwwroot\display\css\maps\style.css.map" />
+    <None Include="wwwroot\display\js\script.js" />
+    <None Include="wwwroot\display\plugins\aos\aos.js" />
+    <None Include="wwwroot\display\plugins\bootstrap\bootstrap.min.js" />
+    <None Include="wwwroot\display\plugins\filterizr\jquery.filterizr.min.js" />
+    <None Include="wwwroot\display\plugins\google-map\gmap.js" />
+    <None Include="wwwroot\display\plugins\google-map\images\marker.encryptedpng" />
+    <None Include="wwwroot\display\plugins\jQuery\jquery.min.js" />
+    <None Include="wwwroot\display\plugins\slick\fonts\slick.svg" />
+    <None Include="wwwroot\display\plugins\slick\slick.min.js" />
+    <None Include="wwwroot\display\plugins\themify-icons\fonts\themify.svg" />
+    <None Include="wwwroot\display\plugins\venobox\venobox.min.js" />
+    <None Include="wwwroot\display\scss\style.scss" />
+    <None Include="wwwroot\display\scss\templates\_homepage.scss" />
+    <None Include="wwwroot\display\scss\templates\_navigation.scss" />
+    <None Include="wwwroot\display\scss\templates\_otherspage.scss" />
+    <None Include="wwwroot\display\scss\templates\_slider.scss" />
+    <None Include="wwwroot\display\scss\_buttons.scss" />
+    <None Include="wwwroot\display\scss\_common.scss" />
+    <None Include="wwwroot\display\scss\_mixins.scss" />
+    <None Include="wwwroot\display\scss\_typography.scss" />
+    <None Include="wwwroot\display\scss\_variables.scss" />
   </ItemGroup>
 
   <ItemGroup>
